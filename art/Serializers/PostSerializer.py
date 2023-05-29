@@ -82,7 +82,7 @@ class privatePostSerializer(ModelSerializer):
 
                 delete =firebase_storage.FirebaseCustom.deleteFirebase(instance.uuid, instance.postfile.file_name)
 
-                if delete:
+                if delete == True:
                     instance.postfile.delete()
                     file_model = self.upload(value, instance)
                     file_model.save()
