@@ -10,7 +10,7 @@ from users.models import User
 
 
 class Posts(APIView):
-    serializer_class = PostSerializer.publicPostSeralizer
+    serializer_class = PostSerializer.privatePostSeralizer
 
     def get(self, request):
         posts = Post.objects.all()
@@ -21,9 +21,22 @@ class Posts(APIView):
 
 
     def post(self, request):
-        user = User.objects.get(pk=1)
-        print("post")
+        serializer = PostSerializer.privatePostSeralizer(data=request.data)
+        if serializer.is_valid():
 
+            post = serializer.save(user_id = 2)
+
+            post.save()
+            serializer = PostSerializer.publicPostSeralizer(
+                post
+            )
+            return  Response(
+                serializer.data
+            )
+        else:
+            return Response(
+                serializer.errors
+            )
 
 
 

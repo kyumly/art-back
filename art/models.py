@@ -31,6 +31,7 @@ class Post(CommonModel):
         User,
         related_name="post",
         on_delete=models.CASCADE,
+        null=True
     )
 
     class Meta:
@@ -71,7 +72,13 @@ class report(CommonModel):
         db_table = "Report"
 
 class PostFile(CommonModel):
-    post = models.ForeignKey(
+    """
+    post 왜래키 설정
+    file_name : 파일 이름
+    file_url : 파일 URL
+    file_type : 파일 타입
+    """
+    post = models.OneToOneField(
         Post,
         related_name='postfile',
         on_delete=models.CASCADE

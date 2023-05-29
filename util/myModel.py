@@ -25,5 +25,6 @@ class Mymodel:
     def setModel(model, **kwargs):
         try:
             return model(**kwargs)
-        except Exception:
+        except Exception as e:
+            print(e)
             raise NotFound("모델 만드는데 실패했습니다.")
