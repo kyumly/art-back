@@ -40,6 +40,10 @@ class Comment(CommonModel):
     2. 닉네임
     3. 작성시간
     """
+    content = models.CharField(
+        max_length=255
+    )
+
     post = models.ForeignKey(
         Post,
         related_name="comment",

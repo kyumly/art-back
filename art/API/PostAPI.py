@@ -25,9 +25,12 @@ class Posts(APIView):
 
     def post(self, request):
         serializer = PostSerializer.privatePostSerializer(data=request.data)
+        file = request.data.get('file', None)
+        if not file:
+            raise ParseError("첨부파일이 없습니다.")
         if serializer.is_valid():
 
-            post = serializer.save(user_id = 2)
+            post = serializer.save(file = file , user_id = 2)
 
             post.save()
             serializer = PostSerializer.publicPostSerializer(
