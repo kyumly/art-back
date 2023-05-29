@@ -15,14 +15,17 @@ class Post(CommonModel):
     6. 작성 시간
     7. 수정 일자
     """
+    file = models.URLField(
+        max_length=255,
+    )
 
     title = models.CharField(
         max_length=255
     )
+
     content = models.TextField()
 
-
-    Address = models.TextField()
+    address = models.TextField(null=True)
 
     user = models.ForeignKey(
         User,
@@ -66,4 +69,24 @@ class report(CommonModel):
 
     class Meta:
         db_table = "Report"
+
+class PostFile(CommonModel):
+    post = models.ForeignKey(
+        Post,
+        related_name='postfile',
+        on_delete=models.CASCADE
+    )
+
+    file_name = models.CharField(
+        max_length=200
+    )
+
+    file_url = models.URLField(max_length=500)
+
+    file_type = models.CharField(
+        max_length=200
+    )
+
+    class Meta:
+        db_table = "PostFile"
 
