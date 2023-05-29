@@ -151,7 +151,7 @@ REST_FRAMEWORK = {
         # 'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # "config.authentication.JWTAuthentication",
+        "config.authentication.JWTAuthentication",
         'rest_framework.authentication.SessionAuthentication',
     )
 }

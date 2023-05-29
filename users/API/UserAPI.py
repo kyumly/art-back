@@ -10,6 +10,8 @@ from util import myModel
 from util.firebase import firebase_storage
 from rest_framework.exceptions import ParseError
 from users.models import User
+from django.contrib.auth import authenticate, login, logout
+from config.authentication import JWTAuthentication
 
 class Me(APIView):
     serializer_class = UserSerializer.privateUserSerializer
@@ -64,3 +66,33 @@ class Refresh(APIView):
         return Response(
             serializer.data
         )
+
+class LogIn(APIView):
+    """
+    {
+    "id" : "skkim3360",
+    "password" : "1234"
+    }
+    """
+    def post(self, request):
+        username = request.data.get("id")
+        password = request.data.get("password")
+
+        if not username or not password:
+            raise ParseError
+        user = authenticate(request, id=username, password =password)
+
+        if user:
+            payload = {
+                "userId" : user.uuid.hex,
+            }
+            token = JWTAuthentication.generate_token(payload, type="access")
+            return Response(
+                {
+                    'token' : token
+                }
+            )
+        else:
+            return Response(
+                {"error" : "비밀번호 오류"}
+            )
