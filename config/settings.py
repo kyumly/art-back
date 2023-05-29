@@ -144,3 +144,32 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "users.user"
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        # 'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # "config.authentication.JWTAuthentication",
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
+
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django.db.backends": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+        },
+    },
+}

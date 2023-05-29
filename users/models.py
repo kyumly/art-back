@@ -11,7 +11,7 @@ class UserManager(BaseUserManager):
         if not id:
             raise ValueError('Users must have an email address')
         user = self.model(
-            phone_number=id,
+            id=id,
             **kwargs
         )
         user.set_password(password)
@@ -82,6 +82,9 @@ class User(AbstractBaseUser, CommonModel):
     def is_staff(self):
         return self.is_admin
 
+    @is_staff.setter
+    def is_staff(self, value):
+        self._is_staff = value
 
     def __str__(self):
         return f"{self.uuid} {self.name}"
@@ -91,10 +94,6 @@ class User(AbstractBaseUser, CommonModel):
 
     def has_module_perms(self, app_label):
         return self.is_admin
-
-    @is_staff.setter
-    def is_staff(self, value):
-        self._is_staff = value
 
 
 class DisabilityInfo(CommonModel):

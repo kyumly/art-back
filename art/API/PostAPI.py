@@ -1,33 +1,36 @@
 from django.shortcuts import render
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from rest_framework import status
 from rest_framework.views import APIView
 from django.db import transaction
 from art.Serializers import  PostSerializer
 from art.models import Post
-
+from util import myModel
+from util.firebase import firebase_storage
+from rest_framework.exceptions import ParseError
 from users.models import User
 
 
 class Posts(APIView):
-    serializer_class = PostSerializer.privatePostSeralizer
+    serializer_class = PostSerializer.privatePostSerializer
 
     def get(self, request):
         posts = Post.objects.all()
-        serializer = PostSerializer.publicPostSeralizer(posts, many=True)
+        serializer = PostSerializer.publicPostSerializer(posts, many=True)
         return Response(
             serializer.data
         )
 
 
     def post(self, request):
-        serializer = PostSerializer.privatePostSeralizer(data=request.data)
+        serializer = PostSerializer.privatePostSerializer(data=request.data)
         if serializer.is_valid():
 
             post = serializer.save(user_id = 2)
 
             post.save()
-            serializer = PostSerializer.publicPostSeralizer(
+            serializer = PostSerializer.publicPostSerializer(
                 post
             )
             return  Response(
@@ -38,5 +41,36 @@ class Posts(APIView):
                 serializer.errors
             )
 
+class PostDetail(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        post = myModel.Mymodel.getModel(Post, uuid = id)
+        return Response(
+            PostSerializer.publicPostSerializer(post).data
+        )
+
+    def put(self, request, id):
+        post = myModel.Mymodel.getModel(Post, uuid = id)
 
 
+    def delete(self, request, id):
+
+        post = Post.objects.select_related('user').get(uuid= id)
+
+        try:
+            with transaction.atomic() :
+                post_uuid = post.uuid
+                delete = firebase_storage.FirebaseCustom.deleteFirebase(post_uuid, post.postfile.file_name)
+                if delete:
+                    post.delete()
+                    return Response(
+                        {"result" : 'ok'},
+                        status=status.HTTP_204_NO_CONTENT,
+                    )
+                else:
+                    post.delete()
+                    raise ParseError("삭제에 실패했습니다.")
+        except Exception as e:
+
+            raise  status.HTTP_400_BAD_REQUEST("삭제에 실패함")

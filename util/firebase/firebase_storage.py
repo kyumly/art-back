@@ -1,3 +1,4 @@
+import google.api_core.exceptions
 from firebase_admin import credentials, initialize_app, storage
 
 class FirebaseCustom:
@@ -21,7 +22,7 @@ class FirebaseCustom:
         self.uuid = uuid
         self.content_type = file.content_type
 
-    def uploadFirebase(self):
+    def uploadFirebase(self, user_uuid):
         """
         파이어베이스 파일 업로드
         """
@@ -33,6 +34,25 @@ class FirebaseCustom:
 
         path = f'{blob.path}?alt=media&token={self.uuid}'
         return path
+
+    @staticmethod
+    def deleteFirebase(uuid, filename):
+        """
+        파이어베이스 파일 업로드
+        """
+        path = f"art/{uuid}/{filename}"
+
+        bucket = storage.bucket()
+        blob = bucket.blob(path)
+        metadata = {"firebaseStorageDownloadTokens": uuid} #access token이 필요하다.
+        blob.metadata = metadata
+        try :
+            delete = blob.delete()
+            return True
+        except google.api_core.exceptions.NotFound:
+            print("첨부파일 삭제 에러")
+            return 400
+
 
     @staticmethod
     def getFirebase(path):

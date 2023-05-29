@@ -5,23 +5,45 @@ from util.firebase import firebase_storage
 from util import myModel
 
 
-class publicPostSeralizer(ModelSerializer):
-    file = serializers.FileField(write_only=True)
+class publicPostFileSerializer(ModelSerializer):
+    file_url = serializers.SerializerMethodField()
+
+    def get_file_url(self, post):
+        return firebase_storage.FirebaseCustom.getFirebase(post.file_url)
+
+    class Meta:
+        model = PostFile
+        fields = [
+            'uuid',
+            "file_name",
+            "file_url",
+            "file_type",
+        ]
+
+class privatePostFileSerializer(ModelSerializer):
+    class Meta:
+        model = PostFile
+        fields = "__all__"
+
+
+class publicPostSerializer(ModelSerializer):
+
+    postfile = publicPostFileSerializer(read_only=True)
 
     class Meta:
         model = Post
         fields = [
             "uuid",
-            'file',
             'created_time',
             'last_update_time',
             'title',
             'content',
             'address',
-            'file'
+            'postfile'
         ]
 
-class privatePostSeralizer(ModelSerializer):
+
+class privatePostSerializer(ModelSerializer):
     file = serializers.FileField(write_only=True)
 
     class Meta:
@@ -47,7 +69,7 @@ class privatePostSeralizer(ModelSerializer):
         firebase = firebase_storage.FirebaseCustom(
             file=file, uuid=post.uuid
         )
-        path = firebase.uploadFirebase()
+        path = firebase.uploadFirebase(user_uuid = post.user.uuid)
 
         file_model = myModel.Mymodel.setModel(PostFile, post_id=post.pk,
                                               file_type=file.content_type, file_url=path,
@@ -55,3 +77,4 @@ class privatePostSeralizer(ModelSerializer):
         file_model.save()
 
         return post
+
