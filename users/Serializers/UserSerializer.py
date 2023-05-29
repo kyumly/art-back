@@ -19,3 +19,21 @@ class publicUserSerializer(ModelSerializer):
             "username",
             "user_type"
         )
+
+class privateUserSerializer(ModelSerializer):
+    password = serializers.CharField(
+        max_length=255,
+        read_only=True
+    )
+
+    class Meta:
+        model = User
+        fields = (
+            "uuid",
+            "id",
+            "phone_number",
+            "name",
+            "username",
+            "user_type",
+            'password'
+        )
