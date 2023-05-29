@@ -8,7 +8,10 @@ class CommonModel(models.Model):
     """
     Common Model Definition
     """
-    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    seq = models.AutoField(primary_key=True)
+
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     created_time = models.DateTimeField(auto_now_add=True)
 
@@ -17,3 +20,11 @@ class CommonModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class UserType(models.TextChoices):
+    """
+    졸업, 재학중, 휴학중, 중퇴, 자퇴, 졸업예정
+    """
+    disability = ("장애")
+    ability = ("일반")

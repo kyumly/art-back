@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from common.models import CommonModel
+from common.models import CommonModel,  UserType
 import uuid
 
 class UserManager(BaseUserManager):
@@ -37,7 +37,6 @@ class UserManager(BaseUserManager):
 
 # Create your models here.
 class User(AbstractBaseUser, CommonModel):
-    uuid = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
 
     id = models.CharField(
         max_length=255,
@@ -60,10 +59,9 @@ class User(AbstractBaseUser, CommonModel):
         null=False
     )
 
-    register_number = models.CharField(
-        unique=True,
-        max_length=255,
-        null=False
+    user_type = models.CharField(
+        max_length=16,
+        choices= UserType.choices
     )
 
 
@@ -99,3 +97,22 @@ class User(AbstractBaseUser, CommonModel):
         self._is_staff = value
 
 
+class DisabilityInfo(CommonModel):
+
+
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="disability"
+    )
+    register_number = models.CharField(
+        unique=True,
+        max_length=255,
+        null=False
+    )
+
+    register_file = models.URLField(max_length=512)
+
+    class Meta:
+        db_table = "DisabilityInfo"
