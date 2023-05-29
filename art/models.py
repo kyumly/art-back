@@ -30,6 +30,9 @@ class Post(CommonModel):
         on_delete=models.CASCADE,
     )
 
+    class Meta:
+        db_table = "Post"
+
 
 class Comment(CommonModel):
     """
@@ -48,6 +51,8 @@ class Comment(CommonModel):
         related_name="comment",
         on_delete=models.CASCADE,
     )
+    class Meta:
+        db_table = "Comment"
 
 
 class report(CommonModel):
@@ -58,4 +63,7 @@ class report(CommonModel):
         related_name="report",
         on_delete=models.CASCADE,
     )
+
+    class Meta:
+        db_table = "Report"
 
