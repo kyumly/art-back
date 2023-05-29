@@ -15,10 +15,6 @@ class Post(CommonModel):
     6. 작성 시간
     7. 수정 일자
     """
-    file = models.URLField(
-        max_length=255,
-    )
-
     title = models.CharField(
         max_length=255
     )

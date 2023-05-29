@@ -42,7 +42,11 @@ class Posts(APIView):
             )
 
 class PostDetail(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
+
+    serializer_class = PostSerializer.privatePostSerializer
+
+
 
     def get(self, request, id):
         post = myModel.Mymodel.getModel(Post, uuid = id)
@@ -52,6 +56,23 @@ class PostDetail(APIView):
 
     def put(self, request, id):
         post = myModel.Mymodel.getModel(Post, uuid = id)
+        serializer =PostSerializer.privatePostSerializer(post, data=request.data, partial=True)
+        if serializer.is_valid():
+            file = request.data.get('file', None)
+            if file:
+                post = serializer.save(file=file)
+            else:
+                post = serializer.save()
+            serializer = PostSerializer.publicPostSerializer(post)
+            return Response(
+                serializer.data
+            )
+
+        else :
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
     def delete(self, request, id):

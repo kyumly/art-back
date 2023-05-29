@@ -38,7 +38,9 @@ class FirebaseCustom:
     @staticmethod
     def deleteFirebase(uuid, filename):
         """
-        파이어베이스 파일 업로드
+        uuid : 게시판
+        filename : 파일이름
+
         """
         path = f"art/{uuid}/{filename}"
 
