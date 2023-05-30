@@ -98,20 +98,27 @@ class User(AbstractBaseUser, CommonModel):
 
 class DisabilityInfo(CommonModel):
 
-
-
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
         related_name="disability"
+    )
+
+    file_name = models.CharField(
+        max_length=200
+    )
+
+    file_url = models.URLField(max_length=500)
+
+
+    file_type = models.CharField(
+        max_length=200
     )
     register_number = models.CharField(
         unique=True,
         max_length=255,
         null=False
     )
-
-    register_file = models.URLField(max_length=512)
 
     class Meta:
         db_table = "DisabilityInfo"
