@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -7,11 +7,18 @@ from django.db import transaction
 from users.Serializers import UserSerializer
 from rest_framework.exceptions import ParseError
 from users.models import User
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate
 from config.authentication import JWTAuthentication
+from art.Serializers import CommentSerializer, PostSerializer
+from art.models import Comment, Post
+
+from  util.myModel import Mymodel
+
+
 
 class Me(APIView):
     serializer_class = UserSerializer.privateUserSerializer
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -53,6 +60,8 @@ class Me(APIView):
 
 class Register(APIView):
     serializer_class = UserSerializer.privateUserSerializer
+
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = UserSerializer.privateUserSerializer(data=request.data)
@@ -120,10 +129,70 @@ class LogIn(APIView):
 
 
 class Comments(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
-        pass
+        user = request.user
+        comments = user.comment.all()
+        return Response(
+            CommentSerializer.publicPostCommentSerializer(comments, many=True).data
+        )
+
+
+
+class CommentsDetail(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, comment_id):
+        comment = Mymodel.getModel(Comment,uuid = comment_id)
+        return Response(
+            CommentSerializer.publicPostCommentSerializer(comment).data
+        )
+
+    def delete(self, request, comment_id):
+        comment = Mymodel.getModel(Comment,uuid = comment_id)
+
+        comment.delete()
+        return Response(
+            {"result": "ok"},
+            status=status.HTTP_204_NO_CONTENT
+        )
+
 
 
 
 class Posts(APIView):
-    pass
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        posts = user.post.all()
+        return Response(
+            PostSerializer.publicPostSerializer(posts, many=True).data
+        )
+
+
+
+
+
+class PostsDetail(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, post_id):
+        comment = Mymodel.getModel(Post,uuid = post_id)
+        return Response(
+            PostSerializer.publicPostSerializer(comment).data
+        )
+
+    def delete(self, request, post_id):
+        comment = Mymodel.getModel(Post,uuid = post_id)
+
+        comment.delete()
+        return Response(
+            {"result": "ok"},
+            status=status.HTTP_204_NO_CONTENT
+        )
+
+
+

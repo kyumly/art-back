@@ -6,8 +6,12 @@ urlpatterns = [
 
     path('register', UserAPI.Register.as_view()),
 
-    path('comments', UserAPI.Comments.as_view()),
+    path('me/comments', UserAPI.Comments.as_view()),
 
-    path('posts', UserAPI.Posts.as_view()),
+    path('me/comments/<uuid:comment_id>', UserAPI.CommentsDetail.as_view()),
+
+    path('me/posts', UserAPI.Posts.as_view()),
+
+    path('me/posts/<uuid:post_id>', UserAPI.PostsDetail.as_view()),
 
 ]

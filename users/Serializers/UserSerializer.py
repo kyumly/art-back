@@ -19,13 +19,14 @@ class publicUserDisability(ModelSerializer):
         ]
 
 class publicUserSerializer(ModelSerializer):
+
     disability = serializers.SerializerMethodField()
 
     def get_disability(self, user):
-        disability = DisabilityInfo.objects.filter(user = user)[0]
-        print(disability)
+        print(user)
+        disability = DisabilityInfo.objects.filter(user = user)
         if disability:
-            return publicUserDisability(disability).data
+            return publicUserDisability(disability[0]).data
         else:
             return "정보가 없습니다."
 

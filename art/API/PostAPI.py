@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -10,10 +10,12 @@ from util import myModel
 from util.firebase import firebase_storage
 from rest_framework.exceptions import ParseError
 from users.models import User
-
+from util.permission import  IsOwnerOrReadOnly
 
 class Posts(APIView):
     serializer_class = PostSerializer.privatePostSerializer
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request):
         posts = Post.objects.all()
@@ -45,7 +47,7 @@ class Posts(APIView):
             )
 
 class PostDetail(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsOwnerOrReadOnly]
 
     serializer_class = PostSerializer.privatePostSerializer
 

@@ -11,9 +11,13 @@ from util.firebase import firebase_storage
 from rest_framework.exceptions import ParseError
 from users.models import User
 
+from util.permission import IsOwnerOrReadOnly
+
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
 
 class PostDetailComment(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOwnerOrReadOnly]
 
     serializer_class = CommentSerializer.publicPostCommentSerializer
 
@@ -44,7 +48,7 @@ class PostDetailComment(APIView):
 
 
 class PostDetailCommentDetail(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOwnerOrReadOnly]
 
     serializer_class = CommentSerializer.privatePostCommentSerializer
 
