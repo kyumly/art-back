@@ -38,6 +38,8 @@ class Posts(APIView):
         "file" : 파일
         json (X) -> multipart
         """
+        if request.user.user_type == "일반":
+            raise ParseError("장애회원만 사용 가능합니다.")
         serializer = PostSerializer.privatePostSerializer(data=request.data)
         file = request.data.get('file', None)
         if not file:
