@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
@@ -15,19 +16,26 @@ from art.models import Comment, Post
 from  util.myModel import Mymodel
 
 
+from users.Swagger import SwaggerSerializer
+
+
 
 class Me(APIView):
     serializer_class = UserSerializer.privateUserSerializer
 
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(tags=["회원 정보 조회"],
+                         responses={"200" : UserSerializer.publicUserSerializer})
     def get(self, request):
         user = request.user
         serializer = UserSerializer.publicUserSerializer(user)
         return Response(
             serializer.data
         )
-
+    @swagger_auto_schema(tags=["회원 수정"],
+                         request_body=UserSerializer.privateUserSerializer,
+                         responses={"200" : UserSerializer.publicUserSerializer})
     def put(self, request):
         user = request.user
         serializer = UserSerializer.privateUserSerializer(user, partial=True, data=request.data)
@@ -52,6 +60,7 @@ class Me(APIView):
                 serializer.errors
             )
 
+    @swagger_auto_schema(tags=["회원 삭제"])
     def delete(self, request):
         pass
 
@@ -63,6 +72,9 @@ class Register(APIView):
 
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(tags=["회원 가입"],
+                         request_body=UserSerializer.privateUserSerializer,
+                         responses={"200": UserSerializer.publicUserSerializer})
     def post(self, request):
         serializer = UserSerializer.privateUserSerializer(data=request.data)
 
@@ -98,11 +110,16 @@ class Register(APIView):
 
 class LogIn(APIView):
     """
+    입력
     {
-    "id" : "skkim3360",
-    "password" : "1234"
+        "id" : "skkim3360",
+        "password" : "1234"
     }
     """
+    @swagger_auto_schema(tags=["회원 로그인"],
+                         request_body = SwaggerSerializer.getRequestLoginSerializer,
+                         responses = {"200": "token"})
+
     def post(self, request):
         username = request.data.get("id")
         password = request.data.get("password")
@@ -131,6 +148,8 @@ class LogIn(APIView):
 class Comments(APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(tags=["회원 댓글 전체 조회"],
+                         responses = {"200": CommentSerializer.publicPostCommentSerializer})
     def get(self, request):
         user = request.user
         comments = user.comment.all()
@@ -144,12 +163,15 @@ class CommentsDetail(APIView):
 
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(tags=["회원 댓글 조회"],
+                         responses = {"200": CommentSerializer.publicPostCommentSerializer})
     def get(self, request, comment_id):
         comment = Mymodel.getModel(Comment,uuid = comment_id)
         return Response(
             CommentSerializer.publicPostCommentSerializer(comment).data
         )
 
+    @swagger_auto_schema(tags=["회원 댓글 삭제"])
     def delete(self, request, comment_id):
         comment = Mymodel.getModel(Comment,uuid = comment_id)
 
@@ -165,6 +187,8 @@ class CommentsDetail(APIView):
 class Posts(APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(tags=["회원이 작성한 게시물"],
+                         responses = {"200": PostSerializer.publicPostSerializer})
     def get(self, request):
         user = request.user
         posts = user.post.all()
@@ -179,12 +203,15 @@ class Posts(APIView):
 class PostsDetail(APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(tags=["회원 게시물 자세히보기"],
+                         responses={"200": PostSerializer.publicPostSerializer})
     def get(self, request, post_id):
         comment = Mymodel.getModel(Post,uuid = post_id)
         return Response(
             PostSerializer.publicPostSerializer(comment).data
         )
 
+    @swagger_auto_schema(tags=["회원 게시물 삭제"])
     def delete(self, request, post_id):
         comment = Mymodel.getModel(Post,uuid = post_id)
 

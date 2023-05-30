@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import status
@@ -6,6 +7,7 @@ from rest_framework.views import APIView
 from django.db import transaction
 from art.Serializers import  PostSerializer
 from art.models import Post
+from users.Swagger import SwaggerSerializer
 from util import myModel
 from util.firebase import firebase_storage
 from rest_framework.exceptions import ParseError
@@ -17,6 +19,8 @@ class Posts(APIView):
 
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    @swagger_auto_schema(tags=["전체 게시글"],
+                         responses={"200": PostSerializer.publicPostSerializer})
     def get(self, request):
         posts = Post.objects.all()
         serializer = PostSerializer.publicPostSerializer(posts, many=True)
@@ -25,7 +29,15 @@ class Posts(APIView):
         )
 
 
+    @swagger_auto_schema(tags=["전체 작성하기"],
+                         request_body=SwaggerSerializer.getRequestPostSerializer,
+                         responses={"200": PostSerializer.publicPostSerializer})
     def post(self, request):
+        """
+        notice
+        "file" : 파일
+        json (X) -> multipart
+        """
         serializer = PostSerializer.privatePostSerializer(data=request.data)
         file = request.data.get('file', None)
         if not file:
@@ -53,13 +65,24 @@ class PostDetail(APIView):
 
 
 
+
+    @swagger_auto_schema(tags=["게시글 자세히 보기"],
+                         responses={"200": PostSerializer.publicPostSerializer})
     def get(self, request, id):
         post = myModel.Mymodel.getModel(Post, uuid = id)
         return Response(
             PostSerializer.publicPostSerializer(post).data
         )
 
+    @swagger_auto_schema(tags=["게시글 자세히 수정"],
+                         request_body=SwaggerSerializer.getRequestPostSerializer,
+                         responses={"200": PostSerializer.publicPostSerializer})
     def put(self, request, id):
+        """
+        notice
+        "file" : 파일
+        json (X) -> multipart
+        """
         post = myModel.Mymodel.getModel(Post, uuid = id)
         serializer =PostSerializer.privatePostSerializer(post, data=request.data, partial=True)
         if serializer.is_valid():
@@ -84,6 +107,7 @@ class PostDetail(APIView):
             )
 
 
+    @swagger_auto_schema(tags=["게시글 삭제"])
     def delete(self, request, id):
 
         post = Post.objects.select_related('user').get(uuid= id)

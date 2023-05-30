@@ -5,6 +5,7 @@ from util.firebase import firebase_storage
 from util import myModel
 from users.models import User, DisabilityInfo
 from rest_framework.exceptions import ParseError
+from drf_yasg import openapi
 
 class publicUserDisability(ModelSerializer):
 
@@ -19,7 +20,6 @@ class publicUserDisability(ModelSerializer):
         ]
 
 class publicUserSerializer(ModelSerializer):
-
     disability = serializers.SerializerMethodField()
 
     def get_disability(self, user):
