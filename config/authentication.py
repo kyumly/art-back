@@ -8,8 +8,8 @@ class JWTAuthentication(BaseAuthentication):
 
     def authenticate(self, request):
 
-        # token = request.headers.get("JWT")
-        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzVmMjE5ZjliODI0NjhiOWUxZmJkYjVlMDkzNmI5MCIsImV4cCI6MTY4NjU4NTkyMSwiaWF0IjoxNjg1Mzc2MzIxfQ.zs8w9yrch8iDqm3j9dRcKuZqEs-FLpC3H1o9Qg6Gjd0"
+        token = request.headers.get("JWT")
+
         if not token:
             return None
         try:

@@ -24,7 +24,7 @@ class PostTestCase(APITestCase):
         file_content = b'This is a test file.'
         file = SimpleUploadedFile('test_file.txt', file_content, content_type='text/plain')
         POST_DATA['file'] = file
-        print(file)
+
         response = self.client.post(
             path=self.URL,
             data=POST_DATA,

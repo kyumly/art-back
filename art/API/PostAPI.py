@@ -68,6 +68,10 @@ class PostDetail(APIView):
                 post = serializer.save(file=file)
             else:
                 post = serializer.save()
+
+            pk = post.pk
+            post = Post.objects.get(pk= pk)
+
             serializer = PostSerializer.publicPostSerializer(post)
             return Response(
                 serializer.data

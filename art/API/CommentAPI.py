@@ -17,7 +17,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
 class PostDetailComment(APIView):
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly ,IsAuthenticatedOrReadOnly]
 
     serializer_class = CommentSerializer.publicPostCommentSerializer
 
@@ -48,10 +48,10 @@ class PostDetailComment(APIView):
 
 
 class PostDetailCommentDetail(APIView):
-    permission_classes = [IsOwnerOrReadOnly]
 
     serializer_class = CommentSerializer.privatePostCommentSerializer
 
+    permission_classes = [IsOwnerOrReadOnly, IsAuthenticatedOrReadOnly]
 
 
     def get(self, request, id, comment_id):

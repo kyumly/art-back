@@ -23,7 +23,6 @@ class publicUserSerializer(ModelSerializer):
     disability = serializers.SerializerMethodField()
 
     def get_disability(self, user):
-        print(user)
         disability = DisabilityInfo.objects.filter(user = user)
         if disability:
             return publicUserDisability(disability[0]).data

@@ -16,8 +16,22 @@ USER_DATA_ability= {
     "password" : '1234'
 }
 
+USER_DATA_ability_2= {
+    "id" : "1",
+    "name" : "2",
+    "username" : "3",
+    "phone_number" : "4",
+    "user_type" : '5',
+    "password" : '6'
+}
+
+
 POST_DATA = {
     'title' : "제목 테스트 진행중",
     'content' : '내용 작성중',
     'address' : '주소 입니다.',
+}
+
+COMMENT_DATA = {
+    "content" : "테스트 진행한다"
 }

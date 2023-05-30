@@ -85,6 +85,7 @@ class privatePostSerializer(ModelSerializer):
                 if delete == True:
                     instance.postfile.delete()
                     file_model = self.upload(value, instance)
+
                     file_model.save()
                 else:
                     raise ("수정에 실패했습니다.")
@@ -96,6 +97,7 @@ class privatePostSerializer(ModelSerializer):
 
 
     def upload(self, file, post):
+
         firebase = firebase_storage.FirebaseCustom(
             file=file, uuid=post.uuid
         )
@@ -103,4 +105,5 @@ class privatePostSerializer(ModelSerializer):
         file_model = myModel.Mymodel.setModel(PostFile, post_id=post.pk,
                                               file_type=file.content_type, file_url=path,
                                               file_name=file.name)
+
         return file_model
