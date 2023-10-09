@@ -23,6 +23,9 @@ class Post(CommonModel):
 
     address = models.TextField(null=True)
 
+    x = models.IntegerField(null=True)
+    y = models.IntegerField(null=True)
+
     user = models.ForeignKey(
         User,
         related_name="post",

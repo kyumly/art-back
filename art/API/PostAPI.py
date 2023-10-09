@@ -22,7 +22,7 @@ class Posts(APIView):
     @swagger_auto_schema(tags=["전체 게시글"],
                          responses={"200": PostSerializer.publicPostSerializer})
     def get(self, request):
-        posts = Post.objects.all()
+        posts = Post.objects.select_related("user")
         serializer = PostSerializer.publicPostSerializer(posts, many=True)
         return Response(
             serializer.data
@@ -42,13 +42,15 @@ class Posts(APIView):
             raise ParseError("장애회원만 사용 가능합니다.")
         serializer = PostSerializer.privatePostSerializer(data=request.data)
         file = request.data.get('file', None)
+
+        user_id = request.user.seq
+
         if not file:
             raise ParseError("첨부파일이 없습니다.")
         if serializer.is_valid():
 
-            post = serializer.save(file = file , user_id = 2)
+            post = serializer.save(file = file , user_id = user_id)
 
-            post.save()
             serializer = PostSerializer.publicPostSerializer(
                 post
             )

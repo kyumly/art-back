@@ -15,9 +15,12 @@ class PostTestCase(APITestCase):
         User.objects.create(
             **USER_DATA_ability
         )
-        User.objects.create(
+        user = User.objects.create(
             **USER_DATA_disability
         )
+        user.set_password("1234")
+        user.save()
+
 
 
     def test_post(self):
@@ -25,10 +28,23 @@ class PostTestCase(APITestCase):
         file = SimpleUploadedFile('test_file.txt', file_content, content_type='text/plain')
         POST_DATA['file'] = file
 
+
+        login_data = {
+            'id' : "skkim3530",
+            'password' : "1234"
+        }
+        response = self.client.post(
+            data=login_data,
+            path=f"/api/v1/users/login",
+            format='json'
+        )
+        jwt = response.data['token']
+
         response = self.client.post(
             path=self.URL,
             data=POST_DATA,
-            format='multipart'
+            format='multipart',
+            HTTP_jwt = jwt
         )
         print("data : ", response.data)
 

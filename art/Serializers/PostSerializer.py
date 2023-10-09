@@ -28,8 +28,15 @@ class privatePostFileSerializer(ModelSerializer):
 
 class publicPostSerializer(ModelSerializer):
 
+
     postfile = publicPostFileSerializer(read_only=True)
 
+    user_name = serializers.SerializerMethodField(read_only=True)
+    def get_user_name(self, post : Post):
+        try:
+            return post.user.username
+        except Exception:
+            return "에러"
     class Meta:
         model = Post
         fields = [
@@ -39,7 +46,10 @@ class publicPostSerializer(ModelSerializer):
             'title',
             'content',
             'address',
-            'postfile'
+            'postfile',
+            'user_name',
+            "x",
+            "y"
         ]
 
 
@@ -55,6 +65,8 @@ class privatePostSerializer(ModelSerializer):
             'title',
             'content',
             'address',
+            'x',
+            'y',
             'file'
         ]
 
