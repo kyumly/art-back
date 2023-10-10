@@ -23,8 +23,8 @@ class Post(CommonModel):
 
     address = models.TextField(null=True)
 
-    x = models.IntegerField(null=True)
-    y = models.IntegerField(null=True)
+    x = models.FloatField(null=True)
+    y = models.FloatField(null=True)
 
     user = models.ForeignKey(
         User,
