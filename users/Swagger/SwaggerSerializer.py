@@ -28,4 +28,9 @@ class getRequestPostSerializer(serializers.Serializer):
     address = serializers.CharField(
         max_length=255
     )
+
+    address_detail = serializers.CharField(
+        max_length=255
+    )
+
     file = serializers.FileField()

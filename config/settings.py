@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import environ
 from pathlib import Path
 import os
 
@@ -27,6 +28,9 @@ SECRET_KEY = 'django-insecure-7v1s0&_zrfd2e%+!d1=x*y97wz)rm91x#zbihb5^_5ua*8xxh(
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+
+env = environ.Env()
+environ.Env.read_env(BASE_DIR / '.env')
 
 
 # Application definition
@@ -87,11 +91,25 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+
+mysql_init_database = {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'art',
+    'USER': env('POSTGRES_USER'),
+    'PASSWORD': env('POSTGRES_PASSWORD'),
+    'HOST': env('POSTGRES_HOST'),
+    'PORT': env('POSTGRES_PORT'),
+}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': mysql_init_database
 }
 
 

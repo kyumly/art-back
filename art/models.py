@@ -23,6 +23,8 @@ class Post(CommonModel):
 
     address = models.TextField(null=True)
 
+    address_detail = models.TextField(null=True)
+
     x = models.FloatField(null=True)
     y = models.FloatField(null=True)
 

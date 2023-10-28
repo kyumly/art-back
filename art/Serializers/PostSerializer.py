@@ -46,10 +46,9 @@ class publicPostSerializer(ModelSerializer):
             'title',
             'content',
             'address',
+            'address_detail',
             'postfile',
             'user_name',
-            "x",
-            "y"
         ]
 
 
@@ -65,8 +64,7 @@ class privatePostSerializer(ModelSerializer):
             'title',
             'content',
             'address',
-            'x',
-            'y',
+            'address_detail',
             'file'
         ]
 

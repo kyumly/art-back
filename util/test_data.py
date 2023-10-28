@@ -30,8 +30,7 @@ POST_DATA = {
     'title' : "제목 테스트 진행중",
     'content' : '내용 작성중',
     'address' : '주소 입니다.',
-    "x" : 1000,
-    "y" : 2000
+    'address_detail' : "테스트 상세주소"
 }
 
 COMMENT_DATA = {
