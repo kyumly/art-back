@@ -25,8 +25,6 @@ class Post(CommonModel):
 
     address_detail = models.TextField(null=True)
 
-    x = models.FloatField(null=True)
-    y = models.FloatField(null=True)
 
     user = models.ForeignKey(
         User,
