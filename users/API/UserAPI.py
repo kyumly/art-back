@@ -71,7 +71,7 @@ class Me(APIView):
             )
         except Exception as e:
             print(e)
-            raise ParseError("comment 삭제 오류")
+            raise ParseError("회원 삭제 오류")
 
 
 
