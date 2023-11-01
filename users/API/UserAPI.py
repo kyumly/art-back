@@ -62,7 +62,17 @@ class Me(APIView):
 
     @swagger_auto_schema(tags=["회원 삭제"])
     def delete(self, request):
-        pass
+        user = request.user
+        try:
+            user.delete()
+            return Response(
+                {"result": "ok"},
+                status=status.HTTP_204_NO_CONTENT
+            )
+        except Exception as e:
+            print(e)
+            raise ParseError("comment 삭제 오류")
+
 
 
 
