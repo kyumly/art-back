@@ -141,6 +141,7 @@ class LogIn(APIView):
         if user:
             payload = {
                 "userId" : user.uuid.hex,
+                'user_name' : user.username,
             }
             token = JWTAuthentication.generate_token(payload, type="access")
             return Response(
